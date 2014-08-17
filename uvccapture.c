@@ -30,7 +30,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <jpeglib.h>
+#include <time.h>
 #include <linux/videodev.h>
+
 #include "v4l2uvc.h"
 
 static const char version[] = VERSION;
@@ -375,15 +377,16 @@ main (int argc, char *argv[])
 	fclose (file);
 	videoIn->getPict = 0;
       }
-      if (post_capture_command[0])
+      if (post_capture_command[0]) {
 	if (verbose >= 1)
 	  fprintf (stderr, "Executing '%s %s'\n", post_capture_command[0],
 		   post_capture_command[1]);
-      if (spawn (post_capture_command, post_capture_command_wait, verbose)) {
-	fprintf (stderr, "Command exited with error\n");
-	close_v4l2 (videoIn);
-	free (videoIn);
-	exit (1);
+	if (spawn (post_capture_command, post_capture_command_wait, verbose)) {
+	  fprintf (stderr, "Command exited with error\n");
+	  close_v4l2 (videoIn);
+	  free (videoIn);
+	  exit (1);
+	}
       }
 
       ref_time = time (NULL);
