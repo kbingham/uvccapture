@@ -2,7 +2,6 @@
 /*******************************************************************************
 #             uvccapture: USB UVC Video Class Snapshot Software                #
 #This package work with the Logitech UVC based webcams with the mjpeg feature  #
-#All the decoding is in user space with the embedded jpeg decoder              #
 #.                                                                             #
 # 	Orginally Copyright (C) 2005 2006 Laurent Pinchart &&  Michel Xhaard   #
 #       Modifications Copyright (C) 2006  Gabriel A. Devenyi                   #

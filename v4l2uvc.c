@@ -2,7 +2,6 @@
 /*******************************************************************************
 #             uvccapture: USB UVC Video Class Snapshot Software                #
 #This package work with the Logitech UVC based webcams with the mjpeg feature  #
-#All the decoding is in user space with the embedded jpeg decoder              #
 #.                                                                             #
 # 	Orginally Copyright (C) 2005 2006 Laurent Pinchart &&  Michel Xhaard   #
 #       Modifications Copyright (C) 2006  Gabriel A. Devenyi                   #
@@ -33,7 +32,6 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include "v4l2uvc.h"
-#include "utils.h"
 
 static int debug = 0;
 
@@ -283,29 +281,6 @@ video_disable (struct vdIn *vd)
   return 0;
 }
 
-static int
-convertframe (struct vdIn *vd)
-{
-  switch (vd->formatIn) {
-  case V4L2_PIX_FMT_MJPEG:
-    if (jpeg_decode
-	(&vd->framebuffer, vd->tmpbuffer, &vd->width, &vd->height) < 0) {
-      fprintf (stderr, "jpeg decode errors\n");
-      goto err;
-    }
-    break;
-  case V4L2_PIX_FMT_YUYV:
-    // convert to output format
-    break;
-  default:
-    goto err;
-    break;
-  }
-  return 0;
-err:
-  return -1;
-}
-
 int
 uvcGrab (struct vdIn *vd)
 {
@@ -352,8 +327,6 @@ uvcGrab (struct vdIn *vd)
     goto err;
   }
 
-  if (convertframe (vd) < 0)
-    goto err;
   return 0;
 err:
   vd->signalquit = 0;
@@ -363,8 +336,17 @@ err:
 int
 close_v4l2 (struct vdIn *vd)
 {
+  int i;
+
   if (vd->isstreaming)
     video_disable (vd);
+
+  /* If the memory maps are not released the device will remain opened even
+     after a call to close(); */
+  for (i = 0; i < NB_BUFFER; i++) {
+    munmap(vd->mem[i], vd->buf.length);
+  }
+
   if (vd->tmpbuffer)
     free (vd->tmpbuffer);
   vd->tmpbuffer = NULL;
@@ -376,6 +358,7 @@ close_v4l2 (struct vdIn *vd)
   vd->videodevice = NULL;
   vd->status = NULL;
   vd->pictName = NULL;
+  close(vd->fd);
   return 0;
 }
 

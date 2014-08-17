@@ -1,7 +1,7 @@
 CC=gcc
 CPP=g++
 APP_BINARY=uvccapture
-VERSION = 0.2
+VERSION = 0.3
 
 #WARNINGS = -Wall
 
@@ -9,7 +9,7 @@ VERSION = 0.2
 CFLAGS = -std=gnu99 -O2 -DLINUX -DVERSION=\"$(VERSION)\" $(WARNINGS)
 CPPFLAGS = $(CFLAGS)
 
-OBJECTS= uvccapture.o utils.o v4l2uvc.o
+OBJECTS= uvccapture.o v4l2uvc.o
 
 
 all:    uvccapture
