@@ -17,11 +17,14 @@ imagemagick can handle anything else you might need.
 Right now this software is really a hack, since still image support is not yet
 available in the UVC driver. The program continually polls the UVC driver in
 MJPEG mode, and at a specified interval writes a JPEG header and a single frame
-to file, creating a JPEG image. Input checking is pretty trusting, so call it 
-with the right parameters.
+to file, creating a JPEG image. Because of this continuous polling, this program
+has high CPU usage. Input checking is pretty trusting, so call it with the right
+parameters.
 
 In order for this software to work, whatever device you pass to -d you will need
 to have read/write rights to, please see appropriate /dev documentation for how
 to do this.
+
+This software depends on jpeglib(present on almost all systems)
 
 For usage information, run uvccapture -h

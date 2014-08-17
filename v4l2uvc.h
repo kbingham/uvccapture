@@ -22,8 +22,8 @@
 #                                                                              #
 *******************************************************************************/
 
-#define NB_BUFFER 4
-#define DHT_SIZE 432
+#define NB_BUFFER 16
+#define DHT_SIZE 420
 
 #define V4L2_CID_BACKLIGHT_COMPENSATION	(V4L2_CID_PRIVATE_BASE+0)
 #define V4L2_CID_POWER_LINE_FREQUENCY	(V4L2_CID_PRIVATE_BASE+1)
